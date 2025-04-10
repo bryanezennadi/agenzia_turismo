@@ -47,4 +47,5 @@ di modificare l’attuale password;
 • un’opzione che consenta a un utente di stampare in formato pdf il biglietto per
 partecipare ad un evento; il biglietto deve contenere il nome e il cognome del
 visitatore, la data di stampa del biglietto, il nome, il luogo e la data dell’evento.
-• un QR code, da inserire nel biglietto,
+• un QR code, da inserire nel biglietto, con tutti i dati dell’evento già riportati nel
+pdf.

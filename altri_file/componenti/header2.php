@@ -45,7 +45,7 @@ $titolo = function () {
     <!-- Titolo dinamico -->
     <title><?= $titolo() ?></title> <!-- Corretto: chiamato la funzione con le parentesi -->
 </head>
-<body>
+<script>
 <nav class="navbar">
     <div class="navbar-brand">
         <i class="fas fa-chart-line"></i>
@@ -158,4 +158,21 @@ $titolo = function () {
         </div>
     </div>
 </nav>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+const navbarToggle = document.querySelector('.navbar-toggle');
+const navbarCollapse = document.querySelector('.navbar-collapse');
 
+navbarToggle.addEventListener('click', function() {
+navbarCollapse.classList.toggle('show');
+});
+
+// Close the navbar when clicking outside of it
+document.addEventListener('click', function(event) {
+const isClickInsideNavbar = navbarCollapse.contains(event.target) || navbarToggle.contains(event.target);
+if (!isClickInsideNavbar && navbarCollapse.classList.contains('show')) {
+navbarCollapse.classList.remove('show');
+}
+});
+});
+</script>

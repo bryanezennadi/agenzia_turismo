@@ -28,6 +28,9 @@ $titolo = function () {
             return 'pagina non trovata';
     }
 };
+
+// Inizia la sessione all'inizio del file, prima di qualsiasi output
+session_start();
 ?>
 <!doctype html>
 <html lang="it">
@@ -40,12 +43,16 @@ $titolo = function () {
     <!-- Link per il CSS dinamico -->
     <link rel="stylesheet" href="<?= $path_Style() ?>">
 
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Font Awesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <!-- Titolo dinamico -->
-    <title><?= $titolo() ?></title> <!-- Corretto: chiamato la funzione con le parentesi -->
+    <title><?= $titolo() ?></title>
 </head>
-<script>
+<body>
 <nav class="navbar">
     <div class="navbar-brand">
         <i class="fas fa-chart-line"></i>
@@ -88,8 +95,8 @@ $titolo = function () {
                     <span>Impostazioni</span>
                 </a>
             </li>
-            <?php session_start();
-            if($_SESSION['ruolo'] == 'admin'): ?>
+            <?php
+            if(isset($_SESSION['ruolo']) && $_SESSION['ruolo'] == 'admin'): ?>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="fas fa-users-cog"></i>
@@ -107,21 +114,25 @@ $titolo = function () {
                 <div class="user-details">
                     <h3 class="user-name">
                         <?php
-                        // Query per ottenere il nome utente
-                        $userId = $_SESSION['user_id'];
-                        $stmt = $conn->prepare("
-                            SELECT visitatori.nome 
-                            FROM login
-                            JOIN visitatori ON login.id = visitatori.id_credenziali
-                            WHERE login.id = :id
-                        ");
+                        if(isset($conn) && isset($_SESSION['user_id'])) {
+                            // Query per ottenere il nome utente
+                            $userId = $_SESSION['user_id'];
+                            $stmt = $conn->prepare("
+                                    SELECT visitatori.nome 
+                                    FROM login
+                                    JOIN visitatori ON login.id = visitatori.id_credenziali
+                                    WHERE login.id = :id
+                                ");
 
-                        $stmt->bindParam(':id', $userId);
-                        $stmt->execute();
-                        $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+                            $stmt->bindParam(':id', $userId);
+                            $stmt->execute();
+                            $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                        if ($userInfo) {
-                            echo htmlspecialchars($userInfo['nome'] . ' ' );
+                            if ($userInfo) {
+                                echo htmlspecialchars($userInfo['nome']);
+                            } else {
+                                echo "Utente";
+                            }
                         } else {
                             echo "Utente";
                         }
@@ -129,7 +140,7 @@ $titolo = function () {
                     </h3>
                     <p class="user-role">
                         <?php
-                        if ($_SESSION['ruolo'] == 'admin') {
+                        if (isset($_SESSION['ruolo']) && $_SESSION['ruolo'] == 'admin') {
                             echo "Amministratore";
                         } else {
                             echo "Utente";
@@ -158,21 +169,41 @@ $titolo = function () {
         </div>
     </div>
 </nav>
+
+<!-- Contenuto della pagina -->
+<div class="content-container">
+    <!-- Il contenuto specifico della pagina andrebbe qui -->
+</div>
+
+<!-- Scripts -->
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
-const navbarToggle = document.querySelector('.navbar-toggle');
-const navbarCollapse = document.querySelector('.navbar-collapse');
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbarToggle = document.querySelector('.navbar-toggle');
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+        const userDropdown = document.querySelector('.user-info');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
 
-navbarToggle.addEventListener('click', function() {
-navbarCollapse.classList.toggle('show');
-});
+        // Toggle per la navbar mobile
+        navbarToggle.addEventListener('click', function() {
+            navbarCollapse.classList.toggle('show');
+        });
 
-// Close the navbar when clicking outside of it
-document.addEventListener('click', function(event) {
-const isClickInsideNavbar = navbarCollapse.contains(event.target) || navbarToggle.contains(event.target);
-if (!isClickInsideNavbar && navbarCollapse.classList.contains('show')) {
-navbarCollapse.classList.remove('show');
-}
-});
-});
+        // Toggle per il dropdown utente
+        userDropdown.addEventListener('click', function() {
+            dropdownMenu.classList.toggle('show');
+        });
+
+        // Chiude la navbar quando si clicca fuori
+        document.addEventListener('click', function(event) {
+            const isClickInsideNavbar = navbarCollapse.contains(event.target) || navbarToggle.contains(event.target);
+            if (!isClickInsideNavbar && navbarCollapse.classList.contains('show')) {
+                navbarCollapse.classList.remove('show');
+            }
+
+            const isClickInsideDropdown = userDropdown.contains(event.target);
+            if (!isClickInsideDropdown && dropdownMenu.classList.contains('show')) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    });
 </script>

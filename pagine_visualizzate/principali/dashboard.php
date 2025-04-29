@@ -1,306 +1,227 @@
 <?php
 require_once '../../altri_file/componenti/connection.php';
-require_once '../../altri_file/componenti/header2.php'
-?>
+require_once '../../altri_file/componenti/header2.php';
 
+// Verifica che l'utente sia loggato
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+// Ottieni informazioni utente combinando login e visitatori (o solo login per admin)
+$user_id = $_SESSION['user_id'];
+$stmt = $conn->prepare("
+    SELECT l.id, l.email, l.ruolo, 
+           COALESCE(v.nome, 'Admin') AS nome,
+           v.lingua_base, v.recapito
+    FROM login l
+    LEFT JOIN visitatori v ON l.id = v.id_credenziali
+    WHERE l.id = :id
+");
+$stmt->bindValue(':id', $user_id, PDO::PARAM_INT);
+$stmt->execute();
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Gestione del cambio password
+$passwordMessage = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
+    $currentPassword = $_POST['current_password'] ?? '';
+    $newPassword = $_POST['new_password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+
+    // Ottieni hash password attuale
+    $passwordStmt = $conn->prepare("SELECT password_hash FROM login WHERE id = :id");
+    $passwordStmt->bindValue(':id', $user_id, PDO::PARAM_INT);
+    $passwordStmt->execute();
+    $passwordData = $passwordStmt->fetch(PDO::FETCH_ASSOC);
+
+    // Verifica password attuale
+    if ($passwordData && password_verify($currentPassword, $passwordData['password_hash'])) {
+        if ($newPassword === $confirmPassword) {
+            // Aggiorna la password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $updateStmt = $conn->prepare("UPDATE login SET password_hash = :newHash WHERE id = :id");
+            $updateStmt->bindValue(':newHash', $hashedPassword);
+            $updateStmt->bindValue(':id', $user_id, PDO::PARAM_INT);
+
+            if ($updateStmt->execute()) {
+                $passwordMessage = '<div class="alert success">Password aggiornata con successo!</div>';
+            } else {
+                $passwordMessage = '<div class="alert error">Errore durante l\'aggiornamento della password.</div>';
+            }
+        } else {
+            $passwordMessage = '<div class="alert error">Le nuove password non corrispondono.</div>';
+        }
+    } else {
+        $passwordMessage = '<div class="alert error">Password attuale non corretta.</div>';
+    }
+}
+
+// Crea la tabella prenotazioni se non esiste
+$creaTabella = "
+CREATE TABLE IF NOT EXISTS prenotazioni (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_evento INT NOT NULL,
+    id_visitatore INT NOT NULL,
+    data_prenotazione DATETIME DEFAULT CURRENT_TIMESTAMP,
+    data_pagamento DATETIME NULL,
+    stato_pagamento ENUM('in attesa', 'completato', 'annullato') DEFAULT 'in attesa',
+    FOREIGN KEY (id_evento) REFERENCES eventi(id),
+    FOREIGN KEY (id_visitatore) REFERENCES login(id)
+)";
+$conn->exec($creaTabella); // con PDO si usa exec per query senza risultato
+
+// Ottieni eventi prenotati (solo per visitatori)
+$eventiPrenotati = [];
+if ($user['ruolo'] === 'visitatore') {
+    $stmtEventi = $conn->prepare("
+        SELECT e.*, v.titolo AS titolo_visita, v.luogo, p.data_pagamento
+        FROM eventi e 
+        JOIN visite v ON e.id_visita = v.id
+        JOIN prenotazioni p ON e.id = p.id_evento
+        WHERE p.id_visitatore = :id_visitatore AND p.stato_pagamento = 'completato'
+        ORDER BY e.ora_inizio DESC
+    ");
+    $stmtEventi->bindValue(':id_visitatore', $user_id, PDO::PARAM_INT);
+    $stmtEventi->execute();
+    $eventiPrenotati = $stmtEventi->fetchAll(PDO::FETCH_ASSOC);
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Utente</title>
+    <title>Profilo Utente</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- Sidebar -->
-
-<!-- Main Content -->
-<div class="main-content">
-    <div class="page-header">
-        <h1 class="page-title">Dashboard</h1>
-        <div class="header-actions">
-            <div class="user-welcome">
-                Benvenuto,
-                <?php
-                if (isset($userInfo) && $userInfo) {
-                    echo htmlspecialchars($userInfo['nome']);
-                } else {
-                    echo "Utente";
-                }
-                ?>!
-            </div>
-            <button>
-                <i class="fas fa-bell"></i>
-            </button>
-        </div>
+<div class="container">
+    <div class="profile-header">
+        <h1>Il tuo profilo</h1>
+        <p class="welcome-message">
+            Benvenuto, <?php echo htmlspecialchars($user['nome']); ?>
+            <span class="user-type">(<?php echo ucfirst($user['ruolo']); ?>)</span>
+        </p>
     </div>
 
-    <!-- Overview Cards -->
-    <div class="overview-cards">
+    <div class="profile-content">
+        <!-- Informazioni utente -->
         <div class="card">
-            <i class="fas fa-calendar-check card-icon"></i>
-            <div class="card-title">Attività Completate</div>
-            <div class="card-value">24</div>
-            <div class="card-info success">
-                <i class="fas fa-arrow-up"></i> 12% questa settimana
+            <div class="card-header">
+                <h2><i class="fas fa-user"></i> Informazioni personali</h2>
             </div>
-        </div>
-        <div class="card">
-            <i class="fas fa-tasks card-icon"></i>
-            <div class="card-title">Attività in Corso</div>
-            <div class="card-value">7</div>
-            <div class="card-info info">
-                <i class="fas fa-arrow-right"></i> 3 con scadenza oggi
-            </div>
-        </div>
-        <div class="card">
-            <i class="fas fa-clock card-icon"></i>
-            <div class="card-title">Ore di Attività</div>
-            <div class="card-value">32.5</div>
-            <div class="card-info warning">
-                <i class="fas fa-arrow-down"></i> -2% rispetto alla media
-            </div>
-        </div>
-        <div class="card">
-            <i class="fas fa-star card-icon"></i>
-            <div class="card-title">Punteggio</div>
-            <div class="card-value">89</div>
-            <div class="card-info success">
-                <i class="fas fa-medal"></i> Ottimo rendimento!
-            </div>
-        </div>
-    </div>
-
-    <!-- Two Column Layout -->
-    <div class="two-columns">
-        <!-- Main Column -->
-        <div class="main-column">
-            <!-- Recent Activities -->
-            <div class="content-section">
-                <div class="section-header">
-                    <h2 class="section-title">Attività Recenti</h2>
-                    <span class="section-action">Vedi tutte</span>
+            <div class="card-body">
+                <div class="info-group">
+                    <label>Nome:</label>
+                    <span><?php echo htmlspecialchars($user['nome']); ?></span>
                 </div>
-                <div class="activities-container">
-                    <div class="activity-item">
-                        <div class="activity-icon bg-success">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Attività completata: Aggiornamento profilo</div>
-                            <div class="activity-time">Oggi, 14:30</div>
-                        </div>
+                <?php if ($user['ruolo'] === 'visitatore'): ?>
+                    <div class="info-group">
+                        <label>Lingua base:</label>
+                        <span><?php echo htmlspecialchars($user['lingua_base']); ?></span>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-icon bg-info">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Documento caricato: Report Mensile</div>
-                            <div class="activity-time">Ieri, 11:45</div>
-                        </div>
+                    <div class="info-group">
+                        <label>Recapito:</label>
+                        <span><?php echo htmlspecialchars($user['recapito']); ?></span>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-icon bg-warning">
-                            <i class="fas fa-exclamation"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Promemoria: Scadenza progetto imminente</div>
-                            <div class="activity-time">Ieri, 09:15</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon bg-danger">
-                            <i class="fas fa-times"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Attività non completata: Revisione documenti</div>
-                            <div class="activity-time">22 Apr, 16:20</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon bg-success">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Attività completata: Meeting con team</div>
-                            <div class="activity-time">21 Apr, 10:00</div>
-                        </div>
-                    </div>
+                <?php endif; ?>
+                <div class="info-group">
+                    <label>Email:</label>
+                    <span><?php echo htmlspecialchars($user['email']); ?></span>
                 </div>
-            </div>
-
-            <!-- Stats Grid -->
-            <div class="content-section">
-                <div class="section-header">
-                    <h2 class="section-title">Statistiche Rapide</h2>
-                </div>
-                <div class="stats-grid">
-                    <div class="stats-card">
-                        <div class="stats-header">
-                            <div class="stats-title">Produttività Settimanale</div>
-                            <div class="stats-icon bg-success">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                        </div>
-                        <!-- Progress items -->
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span class="progress-title">Lunedì</span>
-                                <span class="progress-value">85%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill primary" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span class="progress-title">Martedì</span>
-                                <span class="progress-value">70%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill success" style="width: 70%"></div>
-                            </div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span class="progress-title">Mercoledì</span>
-                                <span class="progress-value">90%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill primary" style="width: 90%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-card">
-                        <div class="stats-header">
-                            <div class="stats-title">Progetti Attivi</div>
-                            <div class="stats-icon bg-warning">
-                                <i class="fas fa-project-diagram"></i>
-                            </div>
-                        </div>
-                        <!-- Progress items -->
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span class="progress-title">Progetto Alpha</span>
-                                <span class="progress-value">65%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill warning" style="width: 65%"></div>
-                            </div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span class="progress-title">Progetto Beta</span>
-                                <span class="progress-value">40%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill danger" style="width: 40%"></div>
-                            </div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span class="progress-title">Progetto Gamma</span>
-                                <span class="progress-value">78%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill success" style="width: 78%"></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="info-group">
+                    <label>Tipo account:</label>
+                    <span><?php echo ucfirst(htmlspecialchars($user['ruolo'])); ?></span>
                 </div>
             </div>
         </div>
 
-        <!-- Sidebar Column -->
-        <div class="sidebar-column">
+        <!-- Cambio password -->
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-key"></i> Cambia password</h2>
+            </div>
+            <div class="card-body">
+                <?php echo $passwordMessage; ?>
+
+                <form method="POST" action="">
+                    <div class="form-group">
+                        <label for="current_password">Password attuale:</label>
+                        <input type="password" id="current_password" name="current_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password">Nuova password:</label>
+                        <input type="password" id="new_password" name="new_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Conferma nuova password:</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    <button type="submit" name="change_password" class="btn btn-primary">Aggiorna password</button>
+                </form>
+            </div>
+        </div>
+
+        <?php if ($user['ruolo'] === 'visitatore' && !empty($eventiPrenotati)): ?>
+            <!-- Eventi prenotati (solo per visitatori) -->
             <div class="card">
-                <div class="section-header">
-                    <h2 class="section-title">Nuovi Messaggi</h2>
-                    <span class="section-action">Vedi tutti</span>
+                <div class="card-header">
+                    <h2><i class="fas fa-calendar-check"></i> Eventi prenotati</h2>
                 </div>
-                <div class="message-preview">
-                    <div class="message-avatar">L</div>
-                    <div class="message-content">
-                        <div class="message-header">
-                            <span class="message-sender">Laura Bianchi</span>
-                            <span class="message-time">10:30</span>
-                        </div>
-                        <div class="message-text">
-                            Buongiorno, volevo confermare l'appuntamento di domani...
-                        </div>
-                    </div>
-                </div>
-                <div class="message-preview">
-                    <div class="message-avatar">M</div>
-                    <div class="message-content">
-                        <div class="message-header">
-                            <span class="message-sender">Marco Rossi</span>
-                            <span class="message-time">Ieri</span>
-                        </div>
-                        <div class="message-text">
-                            Ho caricato i nuovi documenti nel sistema, puoi controllarli?
-                        </div>
-                    </div>
-                </div>
-                <div class="message-preview">
-                    <div class="message-avatar">S</div>
-                    <div class="message-content">
-                        <div class="message-header">
-                            <span class="message-sender">Sofia Verdi</span>
-                            <span class="message-time">20 Apr</span>
-                        </div>
-                        <div class="message-text">
-                            Ti ringrazio per il supporto, mi è stato molto utile...
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card progress-card">
-                <div class="section-header">
-                    <h2 class="section-title">Obiettivi</h2>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-header">
-                        <span class="progress-title">Completamento corsi</span>
-                        <span class="progress-value">75%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill primary" style="width: 75%"></div>
-                    </div>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-header">
-                        <span class="progress-title">Produttività</span>
-                        <span class="progress-value">92%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill success" style="width: 92%"></div>
-                    </div>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-header">
-                        <span class="progress-title">Budget utilizzato</span>
-                        <span class="progress-value">45%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill warning" style="width: 45%"></div>
+                <div class="card-body">
+                    <div class="eventi-list">
+                        <?php foreach ($eventiPrenotati as $evento): ?>
+                            <div class="evento-item">
+                                <div class="evento-info">
+                                    <h3><?php echo htmlspecialchars($evento['titolo']); ?></h3>
+                                    <div class="evento-details">
+                                        <span class="evento-date">
+                                            <i class="fas fa-calendar"></i>
+                                            <?php echo date('d/m/Y', strtotime($evento['data_inizio'])); ?>
+                                            <?php if ($evento['data_fine']): ?>
+                                                - <?php echo date('d/m/Y', strtotime($evento['data_fine'])); ?>
+                                            <?php endif; ?>
+                                        </span>
+                                        <span class="evento-location">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <?php echo htmlspecialchars($evento['luogo']); ?>
+                                        </span>
+                                    </div>
+                                    <div class="pagamento-info">
+                                        <span class="label">Pagamento effettuato il:</span>
+                                        <span class="value"><?php echo date('d/m/Y', strtotime($evento['data_pagamento'])); ?></span>
+                                    </div>
+                                    <?php if (!empty($evento['note'])): ?>
+                                        <div class="evento-note">
+                                            <?php echo nl2br(htmlspecialchars($evento['note'])); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="evento-actions">
+                                    <a href="dettaglio_evento.php?id=<?php echo $evento['id']; ?>" class="btn btn-sm">
+                                        <i class="fas fa-eye"></i> Dettagli
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
-        </div>
+        <?php elseif ($user['ruolo'] === 'visitatore'): ?>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-calendar-check"></i> Eventi prenotati</h2>
+                </div>
+                <div class="card-body">
+                    <p class="no-items">Non hai ancora prenotato nessun evento.</p>
+                    <a href="eventi.php" class="btn btn-primary">Scopri gli eventi disponibili</a>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
-
-<script>
-    // Toggle sidebar for responsive design
-    document.querySelector('.sidebar-toggle').addEventListener('click', function() {
-        document.querySelector('.sidebar').classList.toggle('expanded');
-        document.querySelector('.main-content').classList.toggle('shifted');
-    });
-</script>
-</body>
-</html>
+<?php require_once '../../altri_file/componenti/footer.php'; ?>

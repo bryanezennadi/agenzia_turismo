@@ -117,3 +117,17 @@ SELECT * FROM guida;
 SELECT * FROM login;
 SELECT * FROM visitatori;
 select * from visite;
+
+
+CREATE TABLE descrizione_visita (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_visita INT,
+    descrizione TEXT,
+    FOREIGN KEY (id_visita) REFERENCES visite(id)
+);
+INSERT INTO descrizione_visita(id_visita, descrizione) VALUES
+(1, 'Esplora la storia e l\'architettura del Colosseo, l\'anfiteatro romano più grande e uno dei luoghi più iconici di Roma. Un viaggio nel cuore della Roma antica.'),
+(2, 'Un viaggio affascinante tra le antiche case e chiese scavate nella roccia, alla scoperta di Matera, la città dei Sassi, patrimonio mondiale dell\'UNESCO.'),
+(3, 'Un tour guidato attraverso la famosa Galleria degli Uffizi di Firenze, una delle collezioni d\'arte più importanti del mondo, con opere di Botticelli, Leonardo e Michelangelo.'),
+(4, 'Un\'escursione sul Vesuvio per esplorare il cratere di uno dei vulcani più famosi del mondo, con una vista spettacolare su Napoli e sulla Baia di Napoli.'),
+(5, 'Un tour che ti porterà attraverso le rovine di Pompei, un’antica città romana distrutta dall\'eruzione del Vesuvio nel 79 d.C., un viaggio nel passato ricco di storia e cultura.');

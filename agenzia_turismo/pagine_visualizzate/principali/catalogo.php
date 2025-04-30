@@ -30,10 +30,10 @@ try {
         foreach ($eventi as $row) {
             // Converti titolo in formato filename per immagine
             $img_filename = strtolower(str_replace(' ', '-', $row['titolo_visita'])) . '.jfif';
-            $img_path = 'img/visite/' . $img_filename;
+            $img_path = 'img/visite/'.$img_filename;
 
             echo '<div class="card" style="width: 300px; border: 1px solid #ccc; border-radius: 10px; overflow: hidden; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">';
-            echo '  <img src="' . $img_path . '" alt="' . htmlspecialchars($row['titolo_visita']) . '" style="width: 100%; height: 180px; object-fit: cover;">';
+            echo '  <img src="'.$img_path.'" alt="' . htmlspecialchars($row['titolo_visita']) . '" style="width: 100%; height: 180px; object-fit: cover;">';
             echo '  <div class="card-body" style="padding: 15px;">';
             echo '    <h3>' . htmlspecialchars($row['titolo_visita']) . '</h3>';
             echo '    <p><strong>Luogo:</strong> ' . htmlspecialchars($row['luogo']) . '</p>';

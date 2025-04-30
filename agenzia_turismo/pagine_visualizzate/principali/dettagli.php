@@ -22,10 +22,10 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             eventi.minimo_partecipanti,
             eventi.massimo_partecipanti,
             eventi.ora_inizio,
-            descrizione_evento.descrizione
+            descrizione_visita.descrizione
         FROM eventi
         JOIN visite ON eventi.id_visita = visite.id
-        LEFT JOIN descrizione_evento ON eventi.id = descrizione_evento.id_evento
+        LEFT JOIN descrizione_visita ON visite.id = descrizione_visita.id_visita
         WHERE eventi.id = :evento_id
     ";
 
@@ -125,7 +125,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     <div class="evento-card">
                         <div class="evento-content">
                             <p>Evento non trovato.</p>
-                            <a href="eventi.php" class="evento-torna-link"><i class="fas fa-arrow-left"></i> Torna agli eventi</a>
+                            <a href="catalogo.php" class="evento-torna-link"><i class="fas fa-arrow-left"></i> Torna agli eventi</a>
                         </div>
                     </div>
                   </div>';
@@ -135,7 +135,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 <div class="evento-card">
                     <div class="evento-content">
                         <p>Errore nella query: ' . $e->getMessage() . '</p>
-                        <a href="eventi.php" class="evento-torna-link"><i class="fas fa-arrow-left"></i> Torna agli eventi</a>
+                        <a href="catalogo.php" class="evento-torna-link"><i class="fas fa-arrow-left"></i> Torna agli eventi</a>
                     </div>
                 </div>
               </div>';
@@ -145,7 +145,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             <div class="evento-card">
                 <div class="evento-content">
                     <p>ID evento non valido.</p>
-                    <a href="eventi.php" class="evento-torna-link"><i class="fas fa-arrow-left"></i> Torna agli eventi</a>
+                    <a href="catalogo.php" class="evento-torna-link"><i class="fas fa-arrow-left"></i> Torna agli eventi</a>
                 </div>
             </div>
           </div>';

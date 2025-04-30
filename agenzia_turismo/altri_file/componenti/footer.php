@@ -5,4 +5,6 @@
         <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
     </div>
 </footer>
+</body>
+</html>
 

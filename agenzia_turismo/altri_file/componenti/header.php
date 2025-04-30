@@ -7,7 +7,11 @@ $path_Style = function () {
     // Verifica se la pagina è inserimento.php
     if ($currentPage === "registrazione.php") {
         return '../../altri_file/registra.css'; // Percorso CSS per la home
-    } else {
+    }
+    else if($currentPage === "login.php"){
+        return'../../altri_file/login.css';
+    }
+    else {
         return "../altre_pagine/styleForm.css"; // Percorso CSS per altre pagine
     }
 };
@@ -21,8 +25,8 @@ $titolo = function () {
             return 'HOME';
         case "registrazione.php":
             return 'REGISTRAZIONE';
-        case "elimina.php":
-            return 'Pagina_Cancella';
+        case "login.php":
+            return 'LOGIN';
         case "visualizza.php":
             return 'Pagina_Visualizza';
         case "modifica.php":
@@ -48,3 +52,4 @@ $titolo = function () {
     <!-- Titolo dinamico -->
     <title><?= $titolo() ?></title> <!-- Corretto: chiamato la funzione con le parentesi -->
 </head>
+<body>

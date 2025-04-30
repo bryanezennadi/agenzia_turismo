@@ -14,10 +14,21 @@
     --transition: all 0.3s ease;
 }
 
-/* Stile per il form */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Stile per il form di login */
 form {
-    max-width: 500px;
-    margin: 40px auto;
+    max-width: 400px;
+    margin: 60px auto;
     padding: 30px;
     background-color: var(--form-bg);
     border-radius: 15px;
@@ -36,19 +47,17 @@ form::before {
     background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
 }
 
-/* Titolo del form */
+/* Titolo del form (se decidi di aggiungerne uno) */
 form h2 {
     margin-top: 0;
     margin-bottom: 25px;
     color: var(--primary-color);
     font-weight: 600;
     text-align: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Etichette e input */
 label {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
     font-weight: 500;
     margin-top: 15px;
@@ -57,10 +66,8 @@ label {
     transition: var(--transition);
 }
 
-input[type="text"],
 input[type="email"],
-input[type="password"],
-input[type="tel"] {
+input[type="password"] {
     width: 100%;
     padding: 12px 15px;
     margin-top: 8px;
@@ -72,92 +79,22 @@ input[type="tel"] {
     color: var(--text-color);
     transition: var(--transition);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05) inset;
+    box-sizing: border-box;
 }
 
-input[type="text"]:focus,
 input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="tel"]:focus {
+input[type="password"]:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.2);
     transform: translateY(-2px);
 }
 
-/* Gruppi di radio buttons */
-.radio-group {
-    margin: 15px 0 25px 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.radio-option {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-}
-
-input[type="radio"] + label {
-    position: relative;
-    cursor: pointer;
-    padding-left: 30px;
-    padding-right: 10px;
-    font-size: 14px;
-    user-select: none;
-    transition: var(--transition);
-    margin-top: 0;
-    display: inline-block;
-}
-
-input[type="radio"] + label:before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--input-border);
-    border-radius: 50%;
-    background: var(--input-bg);
-    transition: var(--transition);
-}
-
-input[type="radio"]:checked + label:before {
-    border-color: var(--primary-color);
-    background: var(--primary-color);
-}
-
-input[type="radio"]:checked + label:after {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: white;
-}
-
-input[type="radio"]:checked + label {
-    color: var(--primary-color);
-    font-weight: 600;
-}
-
 /* Submit button */
 input[type="submit"] {
     width: 100%;
     padding: 14px;
-    margin-top: 20px;
+    margin-top: 10px;
     background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
     color: white;
     border: none;
@@ -176,29 +113,9 @@ input[type="submit"]:hover {
     box-shadow: 0 6px 20px rgba(78, 84, 200, 0.4);
 }
 
-input[type="submit"]:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-/* Messaggi di errore/successo */
-#password-error {
-    font-size: 14px;
-    margin-top: -15px;
-    margin-bottom: 15px;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background-color: rgba(229, 62, 62, 0.1);
-    border-left: 3px solid var(--error-color);
-    transition: var(--transition);
-}
-
-.success-message {
-    color: var(--success-color);
-    background-color: rgba(72, 187, 120, 0.1);
-    border-left: 3px solid var(--success-color);
+input[type="submit"]:active {
+    animation: pulse 1s;
+    transform: scale(0.98);
 }
 
 /* Animazione di loading */
@@ -212,27 +129,6 @@ input[type="submit"]:disabled {
     100% {
         box-shadow: 0 0 0 0 rgba(78, 84, 200, 0);
     }
-}
-
-input[type="submit"]:active {
-    animation: pulse 1s;
-    transform: scale(0.98);
-}
-
-/* Stile per la sezione lingue */
-.languages-section {
-    background-color: var(--input-bg);
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    border: 1px solid var(--input-border);
-}
-
-.languages-section h3 {
-    margin-top: 0;
-    color: var(--text-color);
-    font-size: 16px;
-    margin-bottom: 15px;
 }
 
 /* Effetto focus su tutto il form */
@@ -254,7 +150,40 @@ form:focus-within::before {
         background-position: 0% 50%;
     }
 }
-footer{
+
+/* Footer */
+footer {
     width: 100%;
+    position: fixed;
     bottom: 0;
+    background-color: var(--form-bg);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    text-align: center;
+    margin-top: auto;
+}
+
+/* Messaggi di errore/successo (se necessario) */
+.error-message {
+    font-size: 14px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: rgba(229, 62, 62, 0.1);
+    border-left: 3px solid var(--error-color);
+    color: var(--error-color);
+    transition: var(--transition);
+}
+
+.success-message {
+    font-size: 14px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: var(--success-color);
+    background-color: rgba(72, 187, 120, 0.1);
+    border-left: 3px solid var(--success-color);
+    transition: var(--transition);
 }

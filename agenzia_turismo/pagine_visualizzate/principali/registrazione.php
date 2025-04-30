@@ -1,8 +1,8 @@
 <?php
 require '../../altri_file/componenti/header.php';
 ?>
-<body>
     <link rel="stylesheet" href="../../altri_file/registra.css">
+
     <form action="../../altri_file/componenti/operazioni/registraOP.php" method="post" id="registrationForm">
         <label for="nome">Inserisci nome:</label>
         <input type="text" name="nome" id="nome" required><br>
@@ -41,7 +41,7 @@ require '../../altri_file/componenti/header.php';
                oninput="this.value = this.value.replace(/[^0-9]/g, '')"><br>
         <input type="submit" value="Registrati" id="submitBtn">
     </form>
-</body>
+
 <?php
 // Incorporiamo lo script direttamente nell'output PHP
 echo '<script>

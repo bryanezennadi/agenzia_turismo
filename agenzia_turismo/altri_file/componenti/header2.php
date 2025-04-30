@@ -11,6 +11,12 @@ $path_Style = function () {
     else if($currentPage === "login.php"){
         return'../../altri_file/login.css';
     }
+    else if($currentPage === "catalogo.php"){
+        return '../../altri_file/Catalogo.css';
+    }
+    else if($currentPage === "dettagli.php"){
+        return '../../altri_file/Dettagli.css';
+    }
     else {
         return '../../altri_file/Catalogo.css'; // Percorso CSS per altre pagine
     }
@@ -22,17 +28,22 @@ $titolo = function () {
     switch ($currentPage) {
         case "dashboard.php":
             return 'DASHBOARD';
-        case "modifica.php":
-            return 'Pagina_Modifica';
+        case "catalogo.php":
+            return 'Catalogo';
         default:
             return 'pagina non trovata';
     }
 };
 
-// Inizia la sessione all'inizio del file, prima di qualsiasi output
-if(session_status() === PHP_SESSION_NONE){
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
 
 ?>
 <!doctype html>
@@ -160,7 +171,7 @@ if(session_status() === PHP_SESSION_NONE){
                     <span>Impostazioni</span>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="../operazioni/logoutOP.php" class="dropdown-item">
+                <a href="../../altri_file/componenti/operazioni/logoutOP.php" class="dropdown-item">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>

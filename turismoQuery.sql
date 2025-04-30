@@ -1,7 +1,9 @@
+-- drop database società_turismo;
 CREATE DATABASE IF NOT EXISTS Società_Turismo;
 USE Società_Turismo;
 
 -- Tabella delle visite turistiche
+-- Tabella delle visite
 CREATE TABLE visite (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titolo VARCHAR(255) NOT NULL,
@@ -19,6 +21,7 @@ CREATE TABLE eventi (
     id_visita INT,
     FOREIGN KEY (id_visita) REFERENCES visite(id)
 );
+
 
 -- Tabella delle guide turistiche
 CREATE TABLE guida (
@@ -46,7 +49,7 @@ CREATE TABLE login (
     password_hash VARCHAR(255) NOT NULL
 );
 
-drop table visitatori;
+-- drop table visitatori;
 -- Tabella visitatori collegata a login
 CREATE TABLE visitatori (
     id INT AUTO_INCREMENT PRIMARY KEY, -- Aggiungi un ID univoco
@@ -95,8 +98,22 @@ CREATE TABLE biglietto (
 );
 
 
+INSERT INTO visite (titolo, durata_media, luogo) VALUES
+('Colosseo', '01:30:00', 'Roma'),
+('Musei Vaticani', '02:00:00', 'Città del Vaticano'),
+('Galleria degli Uffizi', '01:45:00', 'Firenze'),
+('Scavi di Pompei', '02:30:00', 'Pompei'),
+('Arena di Verona', '01:15:00', 'Verona');
+INSERT INTO eventi (prezzo, minimo_partecipanti, massimo_partecipanti, ora_inizio, id_visita) VALUES
+(25.00, 5, 20, '2025-05-10 10:00:00', 1), -- Colosseo
+(30.00, 8, 25, '2025-05-12 11:00:00', 2), -- Musei Vaticani
+(22.50, 4, 15, '2025-05-15 09:30:00', 3), -- Uffizi
+(28.00, 6, 30, '2025-05-18 14:00:00', 4), -- Pompei
+(18.00, 3, 10, '2025-05-20 17:00:00', 5); -- Arena di Verona
+
 
 -- Verifica contenuto tabelle (facoltativo)
 SELECT * FROM guida;
 SELECT * FROM login;
 SELECT * FROM visitatori;
+select * from visite;

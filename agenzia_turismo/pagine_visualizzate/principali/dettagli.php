@@ -5,7 +5,7 @@ require_once '../../altri_file/componenti/header2.php';
 // Aggiungiamo il collegamento al CSS
 echo '<link rel="stylesheet" href="dettagli-evento.css">';
 // Fontawesome per le icone (se non è già presente nell'header)
-echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">';
+
 
 // Verifica se è stato passato un ID valido
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
@@ -101,9 +101,9 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                             </div>
                         </div>
 
-                        <button class="btn-carrello">
+                        <a href="carrello.php?action=add&id=<?php echo $eventoId; ?>&luogo=<?= urldecode($evento['luogo']); ?>" class="btn-carrello">
                             <i class="fas fa-shopping-cart"></i> Aggiungi al carrello
-                        </button>
+                        </a>
 
                         <div class="evento-azioni">
                             <button class="btn-azione">

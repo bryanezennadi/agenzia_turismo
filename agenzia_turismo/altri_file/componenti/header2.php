@@ -17,6 +17,12 @@ $path_Style = function () {
     else if($currentPage === "dettagli.php"){
         return '../../altri_file/Dettagli.css';
     }
+    else if($currentPage === "carrello.php"){
+        return '../../altri_file/carrello.css';
+    }
+    else if($currentPage === "pagamento.php"){
+        return '../../altri_file/pagamento.css';
+    }
     else {
         return '../../altri_file/Catalogo.css'; // Percorso CSS per altre pagine
     }
@@ -30,6 +36,8 @@ $titolo = function () {
             return 'DASHBOARD';
         case "catalogo.php":
             return 'Catalogo';
+        case "carrello.php": return 'CARRELLO';
+        case "pagamento.php": return 'PAGAMENTO';
         default:
             return 'pagina non trovata';
     }
@@ -59,9 +67,7 @@ if (!isset($_SESSION['user_id'])) {
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome per le icone -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- Titolo dinamico -->
     <title><?= $titolo() ?></title>
@@ -94,16 +100,10 @@ if (!isset($_SESSION['user_id'])) {
                     <span>Catalogo</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-envelope"></i>
-                    <span>Messaggi</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-cog"></i>
-                    <span>Impostazioni</span>
+            <li class="nav-item item-carrello">
+                <a href="carrello.php" class="<?php echo (basename($_SERVER['PHP_SELF']) == 'carrello.php') ? 'nav-link active' : 'nav-link'; ?>">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Carrello</span>
                 </a>
             </li>
             <?php

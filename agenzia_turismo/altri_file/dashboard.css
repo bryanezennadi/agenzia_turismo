@@ -450,7 +450,10 @@ body {
     font-style: italic;
     color: #666;
 }
-
+.item-carrello{
+    margin-left: 90%;
+    position: fixed;
+}
 .evento-actions {
     margin-left: 15px;
 }

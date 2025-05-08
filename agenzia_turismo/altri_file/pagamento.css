@@ -38,7 +38,10 @@
     font-size: 22px;
     font-weight: 600;
 }
-
+.item-carrello{
+    margin-left: 90%;
+    position: fixed;
+}
 .navbar-toggle {
     display: none;
     background: none;

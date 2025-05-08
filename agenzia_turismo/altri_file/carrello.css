@@ -49,7 +49,7 @@
     cursor: pointer;
 }
 .item-carrello{
-    right: 0;
+    margin-left: 90%;
     position: fixed;
 }
 

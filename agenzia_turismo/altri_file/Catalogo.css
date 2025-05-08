@@ -77,7 +77,10 @@ body {
     flex: 1;
     margin-left: 30px;
 }
-
+.item-carrello{
+    margin-left: 90%;
+    position: fixed;
+}
 .nav-menu {
     display: flex;
     list-style: none;

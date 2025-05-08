@@ -1,0 +1,642 @@
+/* === Variabili di Colore (Mantenute coerenti con Dettagli.css) === */
+:root {
+    --primary-color: #4e73df;
+    --secondary-color: #1cc88a;
+    --warning-color: #f6c23e;
+    --danger-color: #e74a3b;
+    --dark-color: #5a5c69;
+    --light-color: #f8f9fc;
+    --border-color: #e3e6f0;
+    --text-color: #555;
+}
+.navbar {
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar-brand i {
+    color: var(--primary-color);
+    font-size: 24px;
+}
+
+.navbar-brand h2 {
+    color: var(--dark-color);
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--dark-color);
+    cursor: pointer;
+}
+
+.navbar-collapse {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    margin-left: 30px;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    margin-right: 5px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.nav-link i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--primary-color);
+    background-color: rgba(78, 115, 223, 0.05);
+}
+
+/* User Dropdown */
+.user-dropdown {
+    position: relative;
+    margin-left: auto;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.user-info:hover {
+    background-color: rgba(78, 115, 223, 0.05);
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.user-details {
+    margin-right: 10px;
+}
+
+.user-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin: 0;
+}
+
+.user-role {
+    font-size: 13px;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.dropdown-icon {
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 220px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 10px 0;
+    margin-top: 10px;
+    display: none;
+    z-index: 1000;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(78, 115, 223, 0.05);
+    color: var(--primary-color);
+}
+
+.dropdown-item i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 8px 0;
+}
+
+/* === Contenitore Principale === */
+.pagamento-container {
+    max-width: 1100px;
+    margin: 30px auto 80px;
+    padding: 0 20px;
+}
+
+/* === Header della Pagina === */
+.pagamento-header {
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pagamento-header h2 {
+    font-size: 28px;
+    color: var(--dark-color);
+    margin: 0;
+    font-weight: 600;
+}
+
+.pagamento-torna-link {
+    display: flex;
+    align-items: center;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.pagamento-torna-link i {
+    margin-right: 6px;
+}
+
+/* === Layout a due colonne === */
+.pagamento-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 30px;
+}
+
+/* === Card Contenitore === */
+.pagamento-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 30px;
+    padding: 25px;
+}
+
+/* === Sezioni === */
+.pagamento-sezione-titolo {
+    font-size: 20px;
+    color: var(--dark-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.pagamento-sezione-titolo i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+/* === Form === */
+.form-riga {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-gruppo {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.form-controllo {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 15px;
+    color: var(--text-color);
+    transition: all 0.3s;
+}
+
+.form-controllo:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
+    outline: none;
+}
+
+/* === Metodi di Pagamento === */
+.metodi-pagamento {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.metodo-pagamento-opzione {
+    flex: 1;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.metodo-pagamento-opzione i {
+    font-size: 24px;
+    color: var(--dark-color);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.metodo-pagamento-nome {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.metodo-pagamento-opzione:hover {
+    background-color: var(--light-color);
+    border-color: var(--primary-color);
+}
+
+.metodo-pagamento-opzione.attivo {
+    border-color: var(--primary-color);
+    background-color: rgba(78, 115, 223, 0.05);
+}
+
+.metodo-pagamento-opzione.attivo i {
+    color: var(--primary-color);
+}
+
+/* === Dettagli Carta === */
+.carta-dettagli {
+    margin-top: 20px;
+}
+
+.carta-numero-gruppo {
+    position: relative;
+}
+
+.carta-icone {
+    position: absolute;
+    right: 10px;
+    top: 40px;
+    display: flex;
+    gap: 5px;
+}
+
+.carta-icone i {
+    font-size: 20px;
+    color: var(--dark-color);
+}
+
+/* === Paypal Dettagli === */
+.metodo-dettagli {
+    margin-top: 20px;
+}
+
+.paypal-info {
+    background-color: var(--light-color);
+    border-radius: 6px;
+    padding: 15px;
+    display: flex;
+    align-items: flex-start;
+    margin-top: 15px;
+}
+
+.paypal-info i {
+    color: var(--primary-color);
+    font-size: 16px;
+    margin-right: 10px;
+    margin-top: 2px;
+}
+
+.paypal-info p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+/* === Bonifico Dettagli === */
+.bonifico-info {
+    background-color: var(--light-color);
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.bonifico-label {
+    color: var(--text-color);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+
+.bonifico-value {
+    font-weight: 600;
+    color: var(--dark-color);
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.bonifico-nota {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    color: var(--primary-color);
+    font-size: 14px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.bonifico-nota i {
+    margin-right: 8px;
+    margin-top: 2px;
+}
+
+/* === Checkbox === */
+.checkbox-gruppo {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.checkbox-input {
+    margin-right: 10px;
+    margin-top: 4px;
+}
+
+.checkbox-label {
+    font-size: 14px;
+    color: var(--text-color);
+    font-weight: normal;
+}
+
+.checkbox-label a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.checkbox-label a:hover {
+    text-decoration: underline;
+}
+
+/* === Bottone Pagamento === */
+.btn-paga {
+    width: 100%;
+    padding: 16px;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(28, 200, 138, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-paga i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.btn-paga:hover {
+    background-color: #16a474;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(28, 200, 138, 0.3);
+}
+
+.btn-paga:active {
+    transform: translateY(0);
+}
+
+/* === Badge di Sicurezza === */
+.sicurezza-badge {
+    text-align: center;
+    margin-top: 15px;
+    color: var(--text-color);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sicurezza-badge i {
+    color: var(--secondary-color);
+    margin-right: 5px;
+}
+
+/* === Riepilogo Ordine === */
+.pagamento-riepilogo {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.riepilogo-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 18px 25px;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.riepilogo-header i {
+    margin-right: 10px;
+}
+
+.riepilogo-content {
+    padding: 20px;
+}
+
+.riepilogo-evento {
+    display: flex;
+    align-items: center;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.riepilogo-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 15px;
+}
+
+.riepilogo-evento-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: var(--dark-color);
+}
+
+.riepilogo-evento-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+}
+
+.riepilogo-evento-info p i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+.riepilogo-lista {
+    margin-bottom: 15px;
+}
+
+.riepilogo-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 14px;
+    color: var(--text-color);
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.riepilogo-item:last-child {
+    border-bottom: none;
+}
+
+.riepilogo-totale {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    margin-top: 10px;
+    border-top: 2px solid var(--border-color);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--dark-color);
+}
+
+/* === Responsive Design === */
+@media (max-width: 992px) {
+    .pagamento-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .pagamento-destra {
+        order: -1; /* Mostra il riepilogo prima del form su mobile */
+    }
+}
+
+@media (max-width: 768px) {
+    .form-riga {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .metodi-pagamento {
+        flex-direction: column;
+    }
+
+    .pagamento-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pagamento-torna-link {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagamento-container {
+        padding: 0 15px;
+    }
+
+    .pagamento-card,
+    .riepilogo-content {
+        padding: 15px;
+    }
+
+    .riepilogo-evento {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .riepilogo-img {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}

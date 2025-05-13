@@ -23,6 +23,9 @@ $path_Style = function () {
     else if($currentPage === "pagamento.php"){
         return '../../altri_file/pagamento.css';
     }
+    else if($currentPage === "conferma-pagamento.php"){
+        return '../../altri_file/conferma.css';
+    }
     else {
         return '../../altri_file/Catalogo.css'; // Percorso CSS per altre pagine
     }
@@ -38,6 +41,7 @@ $titolo = function () {
             return 'Catalogo';
         case "carrello.php": return 'CARRELLO';
         case "pagamento.php": return 'PAGAMENTO';
+        case "conferma-pagamento.php": return 'CONFERMA PAGAMENTO';
         default:
             return 'pagina non trovata';
     }

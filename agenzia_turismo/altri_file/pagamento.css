@@ -38,9 +38,36 @@
     font-size: 22px;
     font-weight: 600;
 }
-.item-carrello{
-    margin-left: 90%;
-    position: fixed;
+.item-carrello {
+    margin-left: auto !important;
+    margin-right: 20px;
+}
+/* Modifica alla nav-menu per supportare meglio il posizionamento degli elementi */
+.nav-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1; /* Aggiunto per occupare lo spazio disponibile */
+}
+/* Modifica alla navbar-collapse per supportare meglio il posizionamento a destra */
+.navbar-collapse {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Modificato da space-between per permettere il posizionamento esplicito */
+    flex: 1;
+    margin-left: 30px;
+}
+/* Modifiche responsive per mantenere la posizione anche su schermi piccoli */
+@media (max-width: 992px) {
+    .item-carrello {
+        margin-left: 0 !important;
+        order: 1; /* Sposta più in alto nell'ordine quando in modalità mobile */
+    }
+
+    .nav-menu {
+        width: 100%;
+    }
 }
 .navbar-toggle {
     display: none;
@@ -51,20 +78,7 @@
     cursor: pointer;
 }
 
-.navbar-collapse {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
-    margin-left: 30px;
-}
 
-.nav-menu {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
 
 .nav-item {
     margin-right: 5px;

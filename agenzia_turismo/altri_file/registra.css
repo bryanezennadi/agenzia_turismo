@@ -24,6 +24,7 @@ form {
     box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
+    padding-bottom: 130px;
 }
 
 form::before {

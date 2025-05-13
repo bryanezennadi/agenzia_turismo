@@ -16,6 +16,10 @@ if (isset($_GET['action'])) {
         case 'add':
             if (isset($_GET['id'])) {
                 $evento_id = $_GET['id'];
+                $luogo = isset($_GET['luogo']) ? $_GET['luogo'] : 'Luogo non specificato';
+
+                // Debug - per verificare che l'ID venga ricevuto correttamente
+                // echo "ID ricevuto: " . $evento_id; exit;
 
                 // Verifica se l'evento è già nel carrello
                 if (isset($_SESSION['cart'][$evento_id])) {
@@ -30,25 +34,33 @@ if (isset($_GET['action'])) {
                         eventi.id AS id_evento,
                         visite.titolo AS titolo_visita,
                         eventi.prezzo,
-                        eventi.ora_inizio,
-                        luoghi.nome AS luogo
+                        eventi.ora_inizio
                     FROM eventi
                     JOIN visite ON eventi.id_visita = visite.id
-                    JOIN luoghi ON visite.id_luogo = luoghi.id
-                    WHERE eventi.id = :evento_id
+                    WHERE eventi.id = ?
                 ";
 
                 try {
                     $stmt = $conn->prepare($sql);
-                    $stmt->bindParam(':evento_id', $evento_id, PDO::PARAM_INT);
-                    $stmt->execute();
+                    $stmt->execute([$evento_id]);
 
                     if ($stmt->rowCount() > 0) {
                         $evento = $stmt->fetch(PDO::FETCH_ASSOC);
 
+                        // Utilizziamo il luogo passato nell'URL
+                        $luogo = isset($_GET['luogo']) ? urldecode($_GET['luogo']) : 'Luogo non specificato';
+
+                        // Debug - per verificare i dati recuperati dal database
+                        // echo "<pre>"; print_r($evento); exit;
+
                         // Crea il percorso dell'immagine basato sul titolo della visita
                         $img_filename = strtolower(str_replace(' ', '-', $evento['titolo_visita'])) . '.jfif';
                         $img_path = 'img/visite/' . $img_filename;
+
+                        // Controllo se l'immagine esiste, altrimenti usa un'immagine predefinita
+                        if (!file_exists($img_path)) {
+                            $img_path = 'img/default-event.jpg';
+                        }
 
                         // Aggiungi l'evento al carrello
                         $_SESSION['cart'][$evento_id] = [
@@ -58,12 +70,20 @@ if (isset($_GET['action'])) {
                             'image' => $img_path,
                             'quantity' => 1,
                             'ora_inizio' => $evento['ora_inizio'],
-                            'luogo' => $evento['luogo'] // Aggiungiamo il luogo
+                            'luogo' => $luogo
                         ];
+
+                        // Debug - per verificare che l'elemento sia stato aggiunto al carrello
+                        // echo "<pre>"; print_r($_SESSION['cart']); exit;
+                    } else {
+                        // Debug - se non viene trovato alcun evento
+                        // echo "Nessun evento trovato con ID: " . $evento_id; exit;
                     }
                 } catch (PDOException $e) {
                     // Gestione errore
-                    echo "Errore: " . $e->getMessage();
+                    error_log("Errore nel carrello: " . $e->getMessage());
+                    echo "Si è verificato un errore durante l'aggiunta al carrello: " . $e->getMessage();
+                    exit;
                 }
             }
             header('Location: carrello.php');
@@ -142,14 +162,20 @@ require_once '../../altri_file/componenti/header2.php';
                         <?php foreach ($_SESSION['cart'] as $item): ?>
                             <tr>
                                 <td class="product-info">
-                                    <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
+                                    <img src="<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>">
                                     <div>
-                                        <h3><?php echo $item['name']; ?></h3>
-                                        <p class="product-id">ID: <?php echo $item['id']; ?></p>
+                                        <h3><?php echo htmlspecialchars($item['name']); ?></h3>
+                                        <p class="product-id">ID: <?php echo htmlspecialchars($item['id']); ?></p>
                                         <?php if (isset($item['ora_inizio'])): ?>
                                             <p class="product-datetime">
                                                 <i class="fas fa-calendar-alt"></i>
                                                 <?php echo date("d/m/Y H:i", strtotime($item['ora_inizio'])); ?>
+                                            </p>
+                                        <?php endif; ?>
+                                        <?php if (isset($item['luogo'])): ?>
+                                            <p class="product-location">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                <?php echo htmlspecialchars($item['luogo']); ?>
                                             </p>
                                         <?php endif; ?>
                                     </div>
@@ -193,15 +219,15 @@ require_once '../../altri_file/componenti/header2.php';
                     <h2>Riepilogo ordine</h2>
                     <div class="summary-row">
                         <span>Subtotale</span>
-                        <span>€<?php echo number_format(calculateTotal(), 2); ?></span>
+                        <span>€<?php echo number_format(calculateTotal(), 2, ',', '.'); ?></span>
                     </div>
                     <div class="summary-row">
                         <span>Spedizione</span>
-                        <span>€<?php echo number_format(calculateTotal() > 50 ? 0 : 5.99, 2); ?></span>
+                        <span>€<?php echo number_format(calculateTotal() > 50 ? 0 : 5.99, 2, ',', '.'); ?></span>
                     </div>
                     <div class="summary-row total">
                         <span>Totale</span>
-                        <span>€<?php echo number_format(calculateTotal() + (calculateTotal() > 50 ? 0 : 5.99), 2); ?></span>
+                        <span>€<?php echo number_format(calculateTotal() + (calculateTotal() > 50 ? 0 : 5.99), 2, ',', '.'); ?></span>
                     </div>
                     <div class="promo-code">
                         <input type="text" placeholder="Codice promozionale">

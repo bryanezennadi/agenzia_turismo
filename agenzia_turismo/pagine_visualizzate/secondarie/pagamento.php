@@ -47,6 +47,8 @@ if ($totale == 0) {
                         <input type="hidden" name="nome_evento" value="<?php echo $nome_evento; ?>">
                         <input type="hidden" name="num_biglietti" value="<?php echo $num_biglietti; ?>">
                         <input type="hidden" name="totale" value="<?php echo $totale; ?>">
+                        <input type="hidden" name="data_evento" value="<?php echo $data_evento; ?>">
+                        <input type="hidden" name="luogo" value="<?php echo $luogo; ?>">
 
                         <div class="form-riga">
                             <div class="form-gruppo">

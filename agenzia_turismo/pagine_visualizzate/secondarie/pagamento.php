@@ -21,6 +21,14 @@ $totale_calcolato = $subtotale + $iva + $spese_servizio;
 if ($totale == 0) {
     $totale = $totale_calcolato;
 }
+
+// Salva i dati nella sessione
+$_SESSION['evento_id'] = $evento_id;
+$_SESSION['nome_evento'] = $nome_evento;
+$_SESSION['num_biglietti'] = $num_biglietti;
+$_SESSION['totale'] = $totale;
+$_SESSION['data_evento'] = $data_evento;
+$_SESSION['luogo'] = $luogo;
 ?>
     <!-- Contenitore Principale -->
     <div class="pagamento-container">
@@ -42,14 +50,6 @@ if ($totale == 0) {
                     </h3>
 
                     <form id="pagamentoForm" method="POST" action="conferma-pagamento.php">
-                        <!-- Campi nascosti per i dati dell'evento -->
-                        <input type="hidden" name="evento_id" value="<?php echo $evento_id; ?>">
-                        <input type="hidden" name="nome_evento" value="<?php echo $nome_evento; ?>">
-                        <input type="hidden" name="num_biglietti" value="<?php echo $num_biglietti; ?>">
-                        <input type="hidden" name="totale" value="<?php echo $totale; ?>">
-                        <input type="hidden" name="data_evento" value="<?php echo $data_evento; ?>">
-                        <input type="hidden" name="luogo" value="<?php echo $luogo; ?>">
-
                         <div class="form-riga">
                             <div class="form-gruppo">
                                 <label for="nome">Nome</label>

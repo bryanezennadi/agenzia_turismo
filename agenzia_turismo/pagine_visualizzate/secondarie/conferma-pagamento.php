@@ -3,12 +3,15 @@
 $success = isset($_GET['success']) && $_GET['success'] === 'true';
 $pending = isset($_GET['pending']) && $_GET['pending'] === 'true';
 
-$evento_id = isset($_POST['evento_id']) ? intval($_POST['evento_id']) : 0;
-$nome_evento = isset($_POST['nome_evento']) ? htmlspecialchars($_POST['nome_evento']) : 'Evento';
-$num_biglietti = isset($_POST['num_biglietti']) ? intval($_POST['num_biglietti']) : 1;
-$totale = isset($_POST['totale']) ? floatval($_POST['totale']) : 0;
-$data_evento = isset($_POST['data_evento']) ? htmlspecialchars($_POST['data_evento']) : 'Data non specificata';
-$luogo = isset($_POST['luogo']) ? htmlspecialchars($_POST['luogo']) : 'Luogo non specificato';
+session_start();
+
+// Recupera i dati dalla sessione con i controlli di esistenza
+$evento_id = isset($_SESSION['evento_id']) ? intval($_SESSION['evento_id']) : 0;
+$nome_evento = isset($_SESSION['nome_evento']) ? htmlspecialchars($_SESSION['nome_evento']) : 'Evento';
+$num_biglietti = isset($_SESSION['num_biglietti']) ? intval($_SESSION['num_biglietti']) : 1;
+$totale = isset($_SESSION['totale']) ? floatval($_SESSION['totale']) : 0;
+$data_evento = isset($_SESSION['data_evento']) ? htmlspecialchars($_SESSION['data_evento']) : 'Data non specificata';
+$luogo = isset($_SESSION['luogo']) ? htmlspecialchars($_SESSION['luogo']) : 'Luogo non specificato';
 
 // Generate order ID if not provided
 $order_id = isset($_POST['order_id']) ? htmlspecialchars($_POST['order_id']) : 'ORD-' . rand(10000, 99999);
@@ -133,7 +136,7 @@ Per completare il pagamento, effettua un bonifico bancario utilizzando i seguent
         <a href="ordini.php" class="btn">
             <i class="fas fa-clipboard-list"></i> Visualizza i tuoi ordini
         </a>
-        <a href="index.php" class="btn btn-secondary">
+        <a href="../principali/dashboard.php" class="btn btn-secondary">
             <i class="fas fa-home"></i> Torna alla home
         </a>
     <?php elseif ($pending): ?>
